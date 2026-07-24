@@ -15,6 +15,14 @@ const TONE_GUIDANCE = {
 const roastReportJsonSchema = {
     type: "object",
     properties: {
+        candidate_name: {
+            type: "string",
+            description: "Name of the candidate"
+        },
+        position_applied: {
+            type: "string",
+            description: "Position applied for"
+        },
         overall_score: {
             type: "number",
             description: "Overall score of the resume, 1-10"
@@ -22,6 +30,10 @@ const roastReportJsonSchema = {
         opening_jab: {
             type: "string",
             description: "One punchy line reacting to the resume overall, 1 line"
+        },
+        overall_recommendation: {
+            type: "string",
+            description: "Overall recommendation for the resume, 1 is it strong resume or weak resume more details"
         },
         section_roasts: {
             type: "array",
@@ -60,12 +72,16 @@ const roastReportJsonSchema = {
         }
     },
     required: [
+        "candidate_name",
+        "position_applied",
         "overall_score",
+        "overall_recommendation",
         "opening_jab",
         "section_roasts",
         "self_description_reality_check",
         "backhanded_compliment",
         "real_fixes",
+        "role_fit",
         "closing_line"
     ]
 };
