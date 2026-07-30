@@ -8,13 +8,13 @@ function Login() {
     const { loading, handleLogin } = useAuth(false);
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
-    
+
     const handleSubmit = async (e) => {
         e.preventDefault();
-        try{
-            await handleLogin({email, password});
+        try {
+            await handleLogin({ email, password });
             navigate("/home");
-        }catch(error){
+        } catch (error) {
             console.log(error);
         }
     }
@@ -26,7 +26,7 @@ function Login() {
     // }
 
     return (
-        <main>
+        <main className="auth-main">
             <div className="form-container">
                 <h1>Login</h1>
                 <form onSubmit={handleSubmit}>

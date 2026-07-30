@@ -1,206 +1,68 @@
 const mongoose = require("mongoose");
 
-/**
- * Resume Schema
- *
- * User Inputs
- * - resume_text <- string
- * - self_description <- string
- * - tone <- string
- * - target_role <- string
- *
- * AI Outputs
- * - overall_summary <- string
- * - resume_score <- number
- * - ats_score <- number
- * - match_score <- number
- * - strengths <- array of strings
- * - weaknesses <- array of strings
- * - missing_skills <- array of strings
- * - action_items <- array of strings
- * - sections <- array of objects
- * - interview_questions <- array of objects
- * - preparation <- array of objects
- */
-
-const sectionSchema = new mongoose.Schema(
+const roastSchema = new mongoose.Schema(
   {
-    section: {
-      type: String,
-      enum: [
-        "summary",
-        "experience",
-        "education",
-        "skills",
-        "projects",
-        "certifications",
-        "awards",
-        "publications",
-        "patents",
-        "licenses",
-        "other",
-      ],
-      required: true,
-    },
-
-    quote: {
-      type: String,
-      required: true,
-    },
-
-    roast_title: {
-      type: String,
-      required: true,
-    },
-
-    roast: {
-      type: String,
-      required: true,
-    },
-
-    fix: {
-      type: String,
-      required: true,
-    },
-  },
-  { _id: false }
-);
-
-const preparationSchema = new mongoose.Schema(
-  {
-    day: {
-      type: Number,
-      required: true,
-    },
-
-    focus: {
-      type: String,
-      required: true,
-    },
-
-    schedule: {
-      type: String,
-      required: true,
-    },
-  },
-  { _id: false }
-);
-
-const interviewQuestionSchema = new mongoose.Schema(
-  {
-    question: {
-      type: String,
-      required: true,
-    },
-
-    answer: {
-      type: String,
-      required: true,
-    },
+    section: String,
+    quote: String,
+    roast: String,
+    fix: String
   },
   { _id: false }
 );
 
 const resumeSchema = new mongoose.Schema(
   {
-    // ---------------- USER INPUT ----------------
+    user: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+      required: true
+    },
 
     resume_text: {
       type: String,
-      required: true,
+      required: true
     },
 
     self_description: {
       type: String,
-      default: "",
+      default: ""
     },
 
     target_role: {
       type: String,
-      default: "",
+      default: ""
     },
 
     tone: {
       type: String,
       enum: ["savage", "mild", "motivational"],
-      default: "savage",
+      default: "savage"
     },
 
+    candidate_name: String,
 
+    position_applied: String,
 
-    // ---------------- AI ANALYSIS ----------------
+    overall_score: Number,
 
-    overall_summary: {
-      type: String,
-      required: true,
-    },
+    opening_jab: String,
 
-    resume_score: {
-      type: Number,
-      min: 0,
-      max: 100,
-      required: true,
-    },
+    overall_recommendation: String,
 
-    ats_score: {
-      type: Number,
-      min: 0,
-      max: 100,
-      required: true,
-    },
+    section_roasts: [roastSchema],
 
-    match_score: {
-      type: Number,
-      min: 0,
-      max: 100,
-      required: true,
-    },
+    self_description_reality_check: String,
 
-    strengths: [
-      {
-        type: String,
-      },
-    ],
+    backhanded_compliment: String,
 
-    weaknesses: [
-      {
-        type: String,
-      },
-    ],
+    real_fixes: [String],
 
-    missing_skills: [
-      {
-        type: String,
-      },
-    ],
+    role_fit: String,
 
-    action_items: [
-      {
-        type: String,
-      },
-    ],
-
-    sections: [sectionSchema],
-
-    interview_questions: [interviewQuestionSchema],
-
-    preparation: [preparationSchema],
-
-    final_verdict: {
-      type: String,
-      required: true,
-    },
-
-    // ---------------- STATUS ----------------
-
-    status: {
-      type: String,
-      enum: ["processing", "completed", "failed"],
-      default: "processing",
-    },
+    closing_line: String
   },
   {
-    timestamps: true,
+    timestamps: true
   }
 );
 

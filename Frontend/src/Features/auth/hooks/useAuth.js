@@ -56,7 +56,7 @@ export const useAuth = () => {
                 const response = await getMe();
                 setUser(response.user);
             } catch (error) {
-                console.log(error);
+                setUser(null)
             } finally {
                 setLoading(false);
             }

@@ -1,0 +1,281 @@
+$ink: #1a1c1c;
+$paper: #f9f9f9;
+$accent: #ffde00;
+$card: #ffffff;
+
+.home {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    min-height: 100vh;
+    box-sizing: border-box;
+    padding: 40px 64px;
+    background: $paper;
+
+    @media (max-width: 900px) {
+        padding: 24px 16px;
+    }
+}
+.loading-screen {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    min-height: 100vh;
+    box-sizing: border-box;
+    padding: 40px 64px;
+    background: $paper;
+
+    @media (max-width: 900px) {
+        padding: 24px 16px;
+    }
+}
+
+// Page heading
+.page-header {
+    width: 100%;
+    margin-bottom: 32px;
+}
+
+.eyebrow {
+    display: inline-block;
+    background: $ink;
+    color: $accent;
+    font-family: 'Inter', sans-serif;
+    font-weight: 700;
+    font-size: 12px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 4px 12px;
+    margin-bottom: 10px;
+}
+
+.page-title {
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 900;
+    font-size: 48px;
+    line-height: 1;
+    letter-spacing: -0.02em;
+    text-transform: uppercase;
+    margin: 0;
+
+    @media (max-width: 900px) {
+        font-size: 32px;
+    }
+}
+
+// Two-column grid
+.home-grid {
+    display: flex;
+    width: 100%;
+    gap: 40px;
+    align-items: stretch;
+
+    @media (max-width: 900px) {
+        flex-direction: column;
+    }
+}
+
+.left, .right {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+}
+
+.right {
+    gap: 28px;
+}
+
+// Section headings
+.section-heading {
+    font-family: 'Inter', sans-serif;
+    font-weight: 700;
+    text-transform: uppercase;
+    font-size: 13px;
+    letter-spacing: 0.08em;
+    margin: 0 0 10px 0;
+}
+
+.group-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.hint {
+    font-size: 10px;
+    font-weight: 700;
+    opacity: 0.6;
+    text-transform: uppercase;
+}
+
+// Left column: job description fills full height
+.left textarea {
+    flex: 1;
+    width: 100%;
+    box-sizing: border-box;
+    background: $card;
+    border: 2px solid $ink;
+    box-shadow: 4px 4px 0px 0px $ink;
+    padding: 16px;
+    font-family: 'Inter', sans-serif;
+    font-size: 16px;
+    resize: none;
+
+    &:focus {
+        outline: none;
+    }
+}
+
+.input-group {
+    display: flex;
+    flex-direction: column;
+}
+
+.right textarea,
+.right select {
+    width: 100%;
+    box-sizing: border-box;
+    background: $card;
+    border: 2px solid $ink;
+    box-shadow: 4px 4px 0px 0px $ink;
+    padding: 14px;
+    font-family: 'Inter', sans-serif;
+    font-size: 16px;
+    resize: none;
+
+    &:focus {
+        outline: none;
+    }
+}
+
+#target-role {
+    min-height: 120px;
+}
+
+select {
+    cursor: pointer;
+    appearance: none;
+    font-weight: 700;
+    text-transform: uppercase;
+    margin-bottom: 16px;
+}
+
+// Custom upload box, replaces native file input look
+.hidden-input {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    opacity: 0;
+}
+
+.upload-box {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    border: 2px dashed $ink;
+    background: $card;
+    padding: 32px 16px;
+    cursor: pointer;
+    text-align: center;
+    transition: background 0.15s ease;
+
+    &:hover {
+        background: rgba(255, 222, 0, 0.15);
+    }
+}
+
+.upload-icon {
+    font-size: 28px;
+    line-height: 1;
+}
+
+.upload-text {
+    font-family: 'Inter', sans-serif;
+    font-weight: 700;
+    font-size: 12px;
+    letter-spacing: 0.05em;
+    border: 2px solid $ink;
+    background: $accent;
+    box-shadow: 3px 3px 0px 0px $ink;
+    padding: 10px 16px;
+}
+
+// Generate button
+button {
+    width: 100%;
+    background: $accent;
+    border: 2px solid $ink;
+    box-shadow: 4px 4px 0px 0px $ink;
+    padding: 18px;
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 800;
+    font-size: 20px;
+    text-transform: uppercase;
+    letter-spacing: -0.01em;
+    cursor: pointer;
+    transition: all 0.1s ease;
+
+    &:active {
+        transform: translate(2px, 2px);
+        box-shadow: 2px 2px 0px 0px $ink;
+    }
+}
+// Recent reports list
+.recent-reports {
+    width: 100%;
+    margin-top: 10px;
+    margin-bottom: 5px;
+}
+
+.report-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.report-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    background: $card;
+    border: 2px solid $ink;
+    box-shadow: 3px 3px 0px 0px $ink;
+    padding: 14px 16px;
+    cursor: pointer;
+    transition: all 0.1s ease;
+
+    &:hover {
+        transform: translate(-2px, -2px);
+        box-shadow: 5px 5px 0px 0px $ink;
+    }
+
+    &:active {
+        transform: translate(1px, 1px);
+        box-shadow: 2px 2px 0px 0px $ink;
+    }
+
+    h3 {
+        font-family: 'Inter', sans-serif;
+        font-weight: 700;
+        font-size: 14px;
+        text-transform: uppercase;
+        margin: 0;
+    }
+}
+
+.report-date {
+    font-family: 'Inter', sans-serif;
+    font-size: 12px;
+    font-weight: 600;
+    opacity: 0.6;
+    white-space: nowrap;
+}

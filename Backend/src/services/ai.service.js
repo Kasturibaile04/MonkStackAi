@@ -1,4 +1,10 @@
 const { GoogleGenAI } = require("@google/genai");
+const puppeteer = require("puppeteer");
+const z = require("zod");
+const { zodToJsonSchema } = require("zod-to-json-schema");
+const { randomUUID } = require("crypto");
+const path = require("path");
+const fs = require("fs");
 
 const ai = new GoogleGenAI({
     apiKey: (process.env.GEMINI_API_KEY || "").trim()
@@ -81,7 +87,6 @@ const roastReportJsonSchema = {
         "self_description_reality_check",
         "backhanded_compliment",
         "real_fixes",
-        "role_fit",
         "closing_line"
     ]
 };
@@ -100,7 +105,7 @@ async function analyzeResume({ resumeText, selfDescription, targetRole = "", ton
     for (let attempt = 1; attempt <= MAX_RETRIES; attempt++) {
         try {
             const response = await ai.models.generateContent({
-                model: "gemini-3.5-flash-lite",
+                model: "gemini-3.6-flash",
                 contents: [
                     {
                         role: "user",
@@ -118,9 +123,10 @@ TONE
 TASK
 Roast the resume using only real content provided below. Never invent facts.
 If a self description is provided, compare it against what the resume actually shows.
+
 ${targetRole
-                                        ? `A target role was provided: "${targetRole}". Evaluate the resume's readiness for this specific role and include a "role_fit" field with 1-2 lines on gaps or strengths relative to it.`
-                                        : `No target role was provided — omit the "role_fit" field entirely.`}
+? `A target role was provided: "${targetRole}". Evaluate the resume's readiness for this specific role and include a "role_fit" field with 1-2 lines on gaps or strengths relative to it.`
+: `No target role was provided — omit the "role_fit" field entirely.`}
 
 **Resume:** ${resumeText}
 **Self-Description:** ${selfDescription || "(not provided)"}
@@ -172,4 +178,55 @@ Keep all text short and crisp. No long paragraphs anywhere.`
     throw lastError;
 }
 
-module.exports = { analyzeResume };
+async function generatePdfFromHtml(html) {
+    const browser = await puppeteer.launch({
+        args: ["--no-sandbox", "--disable-setuid-sandbox"]
+    });
+    try {
+        const page = await browser.newPage();
+        await page.setContent(html, { waitUntil: "networkidle0" });
+
+        const tmpDir = path.join(__dirname, "..", "tmp");
+        if (!fs.existsSync(tmpDir)) {
+            fs.mkdirSync(tmpDir, { recursive: true });
+        }
+
+        const fileName = `resume-${randomUUID()}.pdf`;
+        const filePath = path.join(tmpDir, fileName);
+
+        await page.pdf({ path: filePath, format: "A4" });
+        return filePath;
+    } finally {
+        await browser.close();
+    }
+}
+
+async function generateResumepdf({ resume, jobDescription, targetRole }) {
+    const resumePdfSchema = z.object({
+        html: z.string().describe(
+            "The HTML content of the resume which can be converted to PDF using puppeteer"
+        )
+    });
+
+    const prompt = `Generate a resume in HTML format that can be converted to PDF using puppeteer.
+    Resume: ${resume}
+    Target Role: ${targetRole || "(not specified)"}
+    Job Description: ${jobDescription}
+
+    The response should be in the form of JSON with the key "html" which contains the HTML content of the resume.`;
+
+    const response = await ai.models.generateContent({
+        model: "gemini-3.6-flash",
+        contents: prompt,
+        config: {
+            responseMimeType: "application/json",
+            responseSchema: zodToJsonSchema(resumePdfSchema)
+        }
+    });
+
+    const jsonContent = JSON.parse(response.text);
+    const pdfFilePath = await generatePdfFromHtml(jsonContent.html);
+    return pdfFilePath;
+}
+
+module.exports = { analyzeResume, generateResumepdf };

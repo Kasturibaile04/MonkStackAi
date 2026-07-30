@@ -1,0 +1,652 @@
+$ink: #1a1c1c;
+$paper: #f9f9f9;
+$accent: #ffde00;
+$card: #ffffff;
+$secondary: #636262;
+$red-stamp: #ba1a1a;
+$border-light: #e2e2e2;
+
+@mixin shadow($size: 4px) {
+    box-shadow: $size $size 0px 0px $ink;
+}
+
+@mixin professional-border {
+    border: 2px solid $ink;
+}
+
+.resume-audit-page {
+    width: 100%;
+    min-height: 100vh;
+    background: $paper;
+    color: $ink;
+    font-family: 'Inter', sans-serif;
+    overflow-x: hidden;
+}
+
+/* Nav */
+.resume-nav {
+    position: fixed;
+    top: 0;
+    width: 100%;
+    z-index: 50;
+    border-bottom: 2px solid $ink;
+    background: rgba(249, 249, 249, 0.95);
+    backdrop-filter: blur(4px);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    height: 64px;
+    padding: 0 64px;
+
+    @media (max-width: 900px) {
+        padding: 0 16px;
+    }
+
+    .brand {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+    }
+
+    .brand-icon {
+        color: #6d5e00; // primary
+        font-weight: 700;
+    }
+
+    .brand-name {
+        font-family: 'Montserrat', sans-serif;
+        font-size: 20px;
+        font-weight: 800;
+        text-transform: uppercase;
+        letter-spacing: -0.05em;
+    }
+
+    .nav-btn-new {
+        width: max-content;
+        background: $accent;
+        color: #716200;
+        @include professional-border;
+        @include shadow(2px);
+        padding: 6px 12px;
+        font-size: 12px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        transition: all 0.15s ease;
+        cursor: pointer;
+
+        &:active {
+            transform: translate(2px, 2px);
+            box-shadow: 0px 0px 0px 0px $ink;
+        }
+    }
+}
+
+/* Main Content Wrapper */
+.resume-main-content {
+    padding-top: 96px;
+    padding-bottom: 80px;
+    padding-left: 64px;
+    padding-right: 64px;
+    max-width: 1280px;
+    margin: 0 auto;
+
+    @media (max-width: 900px) {
+        padding-left: 16px;
+        padding-right: 16px;
+    }
+}
+
+/* Executive Summary Section */
+.executive-summary {
+    margin-bottom: 48px;
+    @include professional-border;
+    background: $card;
+    padding: 40px;
+    @include shadow;
+    position: relative;
+    overflow: hidden;
+
+    @media (max-width: 900px) {
+        padding: 24px;
+    }
+
+    .bg-shape {
+        position: absolute;
+        top: 0;
+        right: 0;
+        width: 128px;
+        height: 128px;
+        background: $accent;
+        margin-right: -64px;
+        margin-top: -64px;
+        transform: rotate(45deg);
+        opacity: 0.2;
+    }
+
+    .summary-content {
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        gap: 32px;
+        position: relative;
+        z-index: 10;
+
+        @media (min-width: 900px) {
+            flex-direction: row;
+            align-items: flex-end;
+        }
+    }
+
+    .summary-label {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        color: #6d5e00; // primary color in tailwind
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.1em;
+        font-size: 12px;
+        margin-bottom: 12px;
+
+        .label-bar {
+            width: 32px;
+            height: 2px;
+            background: #6d5e00;
+        }
+    }
+
+    .audit-title {
+        font-family: 'Montserrat', sans-serif;
+        font-size: 48px;
+        font-weight: 800;
+        text-transform: uppercase;
+        line-height: 0.95;
+        margin-bottom: 16px;
+        letter-spacing: -0.05em;
+
+        @media (max-width: 900px) {
+            font-size: 36px;
+        }
+
+        .candidate-name {
+            color: $accent;
+            background: $ink;
+            padding: 0 8px;
+        }
+    }
+
+    .candidate-role {
+        font-family: 'Montserrat', sans-serif;
+        font-size: 18px;
+        font-weight: 700;
+        color: $secondary;
+        text-transform: uppercase;
+        letter-spacing: 0.1em;
+    }
+
+    .score-widget {
+        display: flex;
+        align-items: center;
+        gap: 24px;
+    }
+
+    .score-details {
+        text-align: right;
+
+        .score-label {
+            font-size: 10px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.2em;
+            color: $secondary;
+            margin-bottom: 4px;
+        }
+
+        .score-numbers {
+            display: flex;
+            align-items: baseline;
+            gap: 4px;
+
+            .score-value {
+                font-family: 'Montserrat', sans-serif;
+                font-size: 60px;
+                line-height: 1;
+                font-weight: 900;
+            }
+
+            .score-max {
+                font-family: 'Montserrat', sans-serif;
+                font-size: 20px;
+                color: $secondary;
+                font-weight: 700;
+            }
+        }
+    }
+
+    .stamp-roasted {
+        background: $red-stamp;
+        color: #ffffff;
+        @include professional-border;
+        padding: 6px 16px;
+        font-weight: 700;
+        font-size: 14px;
+        letter-spacing: -0.02em;
+        @include shadow(2px);
+        transform: rotate(-8deg);
+        will-change: transform;
+    }
+}
+
+/* Opening Jab Section */
+.opening-jab-section {
+    margin-bottom: 64px;
+    max-width: 900px;
+
+    blockquote {
+        position: relative;
+    }
+
+    .quote-icon {
+        position: absolute;
+        top: -24px;
+        left: -24px;
+        font-size: 60px;
+        color: $border-light;
+        opacity: 0.5;
+    }
+
+    .jab-text {
+        font-family: 'Montserrat', sans-serif;
+        font-size: 36px;
+        text-transform: uppercase;
+        margin-bottom: 16px;
+        font-style: italic;
+        line-height: 1.25;
+        letter-spacing: -0.025em;
+
+        @media (max-width: 900px) {
+            font-size: 32px;
+        }
+    }
+
+    .jab-citation {
+        color: $secondary;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.1em;
+        font-size: 14px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-style: normal;
+
+        .citation-bar {
+            width: 16px;
+            height: 1px;
+            background: $secondary;
+        }
+    }
+}
+
+/* Roast Grid (Experience, Skills, Education) */
+.roast-grid {
+    display: grid;
+    grid-template-columns: repeat(1, 1fr);
+    gap: 32px;
+    margin-bottom: 80px;
+
+    @media (min-width: 900px) {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+
+.roast-card {
+    background: $card;
+    @include professional-border;
+    padding: 24px;
+    @include shadow;
+    display: flex;
+    flex-direction: column;
+    transition: transform 0.2s ease;
+
+    &:hover {
+        transform: translateY(-2px);
+    }
+
+    .card-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 32px;
+
+        h3 {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 18px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: -0.025em;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+
+            .card-num {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                width: 28px;
+                height: 28px;
+                background: $ink;
+                color: #fff;
+                font-size: 12px;
+            }
+        }
+
+        .card-icon {
+            color: $secondary;
+            opacity: 0.3;
+        }
+    }
+
+    .card-body {
+        display: flex;
+        flex-direction: column;
+        gap: 24px;
+        flex: 1;
+    }
+
+    .content-block {
+        .block-label {
+            font-size: 10px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: $secondary;
+            margin-bottom: 8px;
+
+            &.error {
+                color: $red-stamp;
+            }
+
+            &.primary {
+                color: #6d5e00;
+            }
+        }
+
+        .original-quote {
+            background: rgba(238, 238, 238, 0.5);
+            padding: 16px;
+            @include professional-border;
+            border-style: dashed;
+            font-style: italic;
+            font-size: 14px;
+        }
+
+        .critique-text {
+            line-height: 1.6;
+            font-size: 14px;
+        }
+    }
+
+    .card-footer {
+        margin-top: 32px;
+        padding-top: 24px;
+        border-top: 2px dashed $ink;
+
+        .optimization-text {
+            font-weight: 600;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+    }
+}
+
+/* Roadmap to Success */
+.roadmap-section {
+    margin-bottom: 80px;
+    max-width: 900px;
+    margin-left: auto;
+    margin-right: auto;
+
+    .roadmap-outer {
+        background: $ink;
+        padding: 4px 8px;
+        @include professional-border;
+        @include shadow(8px);
+
+        @media (min-width: 900px) {
+            padding: 8px 8px;
+        }
+    }
+
+    .roadmap-inner {
+        background: $paper;
+        padding: 32px;
+        @include professional-border;
+    }
+
+    .roadmap-header {
+        display: flex;
+        flex-direction: column;
+        gap: 24px;
+        margin-bottom: 40px;
+
+        @media (min-width: 900px) {
+            flex-direction: row;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .roadmap-title-group h2 {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 30px;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: -0.05em;
+            margin-bottom: 4px;
+        }
+
+        .roadmap-title-group p {
+            color: $secondary;
+            font-weight: 700;
+            text-transform: uppercase;
+            font-size: 12px;
+            letter-spacing: 0.1em;
+        }
+
+        .status-badge {
+            background: $accent;
+            @include professional-border;
+            padding: 8px 16px;
+            font-weight: 700;
+            font-size: 14px;
+            text-transform: uppercase;
+            display: inline-block;
+        }
+    }
+
+    .roadmap-steps {
+        display: flex;
+        flex-direction: column;
+        gap: 32px;
+    }
+
+    .roadmap-step {
+        display: flex;
+        gap: 20px;
+
+        &:hover .step-num {
+            background: $accent;
+        }
+
+        .step-num {
+            flex-shrink: 0;
+            width: 32px;
+            height: 32px;
+            @include professional-border;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            transition: background 0.2s ease;
+        }
+
+        .step-content {
+            h4 {
+                font-family: 'Montserrat', sans-serif;
+                font-size: 16px;
+                font-weight: 700;
+                text-transform: uppercase;
+                letter-spacing: -0.025em;
+                margin-bottom: 4px;
+            }
+
+            p {
+                color: $secondary;
+                font-size: 14px;
+                line-height: 1.6;
+
+                @media (min-width: 900px) {
+                    font-size: 16px;
+                }
+            }
+        }
+    }
+}
+
+/* Final CTA */
+.final-cta {
+    text-align: center;
+    padding: 64px 0;
+    background: $accent;
+    @include professional-border;
+    @include shadow(8px);
+    max-width: 900px;
+    margin: 0 auto;
+
+    h2 {
+        font-family: 'Montserrat', sans-serif;
+        font-size: 30px;
+        font-weight: 800;
+        text-transform: uppercase;
+        letter-spacing: -0.05em;
+        margin-bottom: 32px;
+
+        @media (min-width: 900px) {
+            font-size: 36px;
+        }
+    }
+
+    .reupload-btn {
+        width: max-content;
+        margin: 0 auto;
+        background: $ink;
+        color: $accent;
+        @include professional-border;
+        @include shadow;
+        padding: 20px 40px;
+        font-family: 'Montserrat', sans-serif;
+        font-size: 18px;
+        font-weight: 700;
+        text-transform: uppercase;
+        display: inline-flex;
+        align-items: center;
+        gap: 12px;
+        cursor: pointer;
+        transition: all 0.15s ease;
+
+        &:active {
+            transform: translate(4px, 4px);
+            box-shadow: 0px 0px 0px 0px $ink;
+        }
+    }
+}
+
+/* Footer */
+.resume-footer {
+    background: $ink;
+    color: $paper;
+    width: 100%;
+    padding: 48px 64px;
+    border-top: 2px solid $ink;
+
+    @media (max-width: 900px) {
+        padding: 48px 16px;
+    }
+
+    .footer-content {
+        max-width: 1280px;
+        margin: 0 auto;
+        display: flex;
+        flex-direction: column;
+        gap: 32px;
+
+        @media (min-width: 900px) {
+            flex-direction: row;
+            justify-content: space-between;
+            align-items: center;
+        }
+    }
+
+    .footer-brandbox {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+
+        .footer-brand {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 24px;
+            color: #ffe24a; // primary-fixed equivalent
+            text-transform: uppercase;
+            font-weight: 900;
+            letter-spacing: -0.05em;
+        }
+
+        .footer-tagline {
+            font-size: 10px;
+            font-weight: 700;
+            color: #c8c6c5;
+            text-transform: uppercase;
+            letter-spacing: 0.3em;
+        }
+    }
+
+    .footer-links-box {
+        text-align: left;
+
+        @media (min-width: 900px) {
+            text-align: right;
+        }
+
+        .footer-links {
+            display: flex;
+            gap: 32px;
+            margin-bottom: 16px;
+
+            @media (min-width: 900px) {
+                justify-content: flex-end;
+            }
+
+            a {
+                font-size: 12px;
+                font-weight: 700;
+                text-transform: uppercase;
+                letter-spacing: 0.1em;
+                color: #fff;
+                text-decoration: none;
+                transition: color 0.2s ease;
+
+                &:hover {
+                    color: $accent;
+                }
+            }
+        }
+
+        .footer-copyright {
+            font-size: 10px;
+            color: rgba(200, 198, 197, 0.6);
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+        }
+    }
+}

@@ -13,8 +13,10 @@ app.use(cors({
 
 // require all the routes here
 const authRoutes = require("./routes/auth.routes");
+const resumeRoutes = require("./routes/resume.routes");
 
 //using all the routes here
 app.use("/api/auth", authRoutes);
+app.use("/api/resume", resumeRoutes);
 
 module.exports = app;

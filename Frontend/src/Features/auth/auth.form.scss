@@ -1,6 +1,6 @@
 @use "../style/button";
 
-main {
+.auth-main {
   min-height: 100vh;
   width: 100%;
 
@@ -60,26 +60,26 @@ main {
       }
     }
   }
-  
 
-//   .button {
-//     padding: 0.75rem;
-//     border: none;
-//     border-radius: 8px;
-//     font-size: 1rem;
-//     font-weight: 600;
-//     cursor: pointer;
-//     transition: opacity 0.2s ease;
 
-//     &:hover {
-//       opacity: 0.9;
-//     }
-//   }
+  //   .button {
+  //     padding: 0.75rem;
+  //     border: none;
+  //     border-radius: 8px;
+  //     font-size: 1rem;
+  //     font-weight: 600;
+  //     cursor: pointer;
+  //     transition: opacity 0.2s ease;
 
-//   .primary-button {
-//     background-color:#EBF212;
-//     color: #111111;
-//   }
+  //     &:hover {
+  //       opacity: 0.9;
+  //     }
+  //   }
+
+  //   .primary-button {
+  //     background-color:#EBF212;
+  //     color: #111111;
+  //   }
 
   p {
     margin-top: 1.5rem;

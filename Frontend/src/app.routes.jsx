@@ -1,11 +1,18 @@
-import {createBrowserRouter} from "react-router";
+import { createBrowserRouter } from "react-router";
 import Login from "./Features/auth/pages/Login";
 import Register from "./Features/auth/pages/Register";
 import Protected from "./Features/auth/components/Protected";
-// import Home from "./Features/auth/pages/Home";
+import Home from "./Features/Resume/pages/Home";
+import Landing from "./Features/Resume/pages/Landingpage";
+import Resume from "./Features/Resume/pages/Resume";
+
 
 
 const appRouter = createBrowserRouter([
+    {
+        path: "/",
+        element: <Landing />
+    },
 
     {
         path: "/login",
@@ -14,9 +21,13 @@ const appRouter = createBrowserRouter([
     {
         path: "/register",
         element: <Register />
-    },{
+    }, {
         path: "/home",
-        element: <Protected><h1>Home</h1></Protected>
+        element: <Home />
+    }, {
+        path: "/resume/:resumeId",
+        element: <Resume />
+        //can put protected here later. to make sure only logged in users can access this
     }
 ]);
 
