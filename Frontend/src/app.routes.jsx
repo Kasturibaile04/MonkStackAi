@@ -5,6 +5,8 @@ import Protected from "./Features/auth/components/Protected";
 import Home from "./Features/Resume/pages/Home";
 import Landing from "./Features/Resume/pages/Landingpage";
 import Resume from "./Features/Resume/pages/Resume";
+import Upgrade from "./Features/Resume/pages/Upgrade";
+
 
 
 
@@ -28,6 +30,9 @@ const appRouter = createBrowserRouter([
         path: "/resume/:resumeId",
         element: <Resume />
         //can put protected here later. to make sure only logged in users can access this
+    }, {
+        path: "/Upgrade/:resumeId",
+        element: <Upgrade />
     }
 ]);
 

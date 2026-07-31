@@ -1,3 +1,5 @@
+require("dotenv").config();
+
 const { GoogleGenAI } = require("@google/genai");
 const puppeteer = require("puppeteer");
 const z = require("zod");
@@ -5,10 +7,6 @@ const { zodToJsonSchema } = require("zod-to-json-schema");
 const { randomUUID } = require("crypto");
 const path = require("path");
 const fs = require("fs");
-
-const ai = new GoogleGenAI({
-    apiKey: (process.env.GEMINI_API_KEY || "").trim()
-});
 
 const VALID_TONES = ["savage", "mild", "motivational"];
 
@@ -75,6 +73,49 @@ const roastReportJsonSchema = {
         closing_line: {
             type: "string",
             description: "A closing mic-drop line, 1 line"
+        },
+        upgrade_action_verbs: {
+            type: "array",
+            description: "1-2 action verb upgrades from the resume",
+            items: {
+                type: "object",
+                properties: {
+                    bad: { type: "string" },
+                    good: { type: "string" }
+                }
+            }
+        },
+        upgrade_quantifiable_data: {
+            type: "array",
+            description: "1-2 quantifiable data upgrades from the resume",
+            items: {
+                type: "object",
+                properties: {
+                    bad: { type: "string" },
+                    good: { type: "string" }
+                }
+            }
+        },
+        upgrade_fluff_cut: {
+            type: "object",
+            description: "Fluff words to remove and what to replace them with",
+            properties: {
+                bad_chips: { type: "array", items: { type: "string" } },
+                good_chips: { type: "array", items: { type: "string" } }
+            }
+        },
+        upgrade_layout_crimes: {
+            type: "string",
+            description: "1 layout issue found in the resume layout"
+        },
+        upgrade_keyword_injection: {
+            type: "array",
+            description: "4-5 keywords that should be injected based on target role",
+            items: { type: "string" }
+        },
+        upgrade_contact_clarity: {
+            type: "string",
+            description: "1 line feedback on contact info clarity in the resume"
         }
     },
     required: [
@@ -87,15 +128,45 @@ const roastReportJsonSchema = {
         "self_description_reality_check",
         "backhanded_compliment",
         "real_fixes",
-        "closing_line"
+        "closing_line",
+        "upgrade_action_verbs",
+        "upgrade_quantifiable_data",
+        "upgrade_fluff_cut",
+        "upgrade_layout_crimes",
+        "upgrade_keyword_injection",
+        "upgrade_contact_clarity"
     ]
 };
+
+// --- Lazy singleton client ---
+// Creating the GoogleGenAI client at module-load time is what caused the
+// ACCESS_TOKEN_TYPE_UNSUPPORTED error: if this file gets required before
+// dotenv.config() has run anywhere in the app, process.env.GEMINI_API_KEY
+// is undefined, the SDK gets an empty-string key, and it silently falls
+// back to trying OAuth/ADC-style auth instead of simple API-key auth.
+// Initializing on first use (after all requires/config have run) fixes this.
+let _ai = null;
+function getClient() {
+    if (_ai) return _ai;
+
+    const apiKey = (process.env.GEMINI_API_KEY || "").trim();
+    if (!apiKey) {
+        throw new Error(
+            "GEMINI_API_KEY is missing or empty. Check that .env exists in your backend root, " +
+            "that dotenv.config() runs before any Gemini calls, and that the variable name matches exactly."
+        );
+    }
+
+    _ai = new GoogleGenAI({ apiKey });
+    return _ai;
+}
 
 async function analyzeResume({ resumeText, selfDescription, targetRole = "", tone = "savage" }) {
     if (!resumeText || !resumeText.trim()) {
         throw new Error("resumeText is required to analyze a resume.");
     }
 
+    const ai = getClient();
     const normalizedTone = VALID_TONES.includes(tone) ? tone : "savage";
     const toneGuidance = TONE_GUIDANCE[normalizedTone];
 
@@ -125,8 +196,8 @@ Roast the resume using only real content provided below. Never invent facts.
 If a self description is provided, compare it against what the resume actually shows.
 
 ${targetRole
-? `A target role was provided: "${targetRole}". Evaluate the resume's readiness for this specific role and include a "role_fit" field with 1-2 lines on gaps or strengths relative to it.`
-: `No target role was provided — omit the "role_fit" field entirely.`}
+                                        ? `A target role was provided: "${targetRole}". Evaluate the resume's readiness for this specific role and include a "role_fit" field with 1-2 lines on gaps or strengths relative to it.`
+                                        : `No target role was provided — omit the "role_fit" field entirely.`}
 
 **Resume:** ${resumeText}
 **Self-Description:** ${selfDescription || "(not provided)"}
@@ -140,7 +211,15 @@ Generate the JSON response matching the schema keys exactly:
 6. real_fixes (3-5): concrete actionable fixes.
 ${targetRole ? "7. role_fit: readiness/gaps for the target role.\n8. closing_line: mic-drop sign-off." : "7. closing_line: mic-drop sign-off."}
 
-Keep all text short and crisp. No long paragraphs anywhere.`
+Keep all text short and crisp. No long paragraphs anywhere.
+
+UPGRADE INTEL (populate every field using ONLY real content from the resume above):
+upgrade_action_verbs: Find 2 weak/passive verbs actually used in this resume and provide stronger alternatives. Format: [{bad: "original phrase", good: "upgraded phrase"}].
+upgrade_quantifiable_data: Find 2 vague impact statements from this resume and rewrite with invented plausible metrics. Format: [{bad: "Original vague claim", good: "Rewritten with % or numbers"}].
+upgrade_fluff_cut: Find 2-3 buzzword/filler phrases in this resume for bad_chips. Suggest specific, provable skill replacements for good_chips.
+upgrade_layout_crimes: One specific layout or structure issue you noticed in this resume (e.g., missing summary section, no dates, inconsistent formatting).
+upgrade_keyword_injection: 5 ATS keywords missing from this resume that match the target role "${targetRole || 'the applied role'}". Return just the keyword strings.
+upgrade_contact_clarity: One specific piece of actionable feedback about the contact section of this resume (missing phone, LinkedIn URL not present, unprofessional email, etc.).`
                             }
                         ]
                     }
@@ -202,6 +281,8 @@ async function generatePdfFromHtml(html) {
 }
 
 async function generateResumepdf({ resume, jobDescription, targetRole }) {
+    const ai = getClient();
+
     const resumePdfSchema = z.object({
         html: z.string().describe(
             "The HTML content of the resume which can be converted to PDF using puppeteer"
@@ -217,7 +298,12 @@ async function generateResumepdf({ resume, jobDescription, targetRole }) {
 
     const response = await ai.models.generateContent({
         model: "gemini-3.6-flash",
-        contents: prompt,
+        contents: [
+            {
+                role: "user",
+                parts: [{ text: prompt }]
+            }
+        ],
         config: {
             responseMimeType: "application/json",
             responseSchema: zodToJsonSchema(resumePdfSchema)
@@ -229,4 +315,72 @@ async function generateResumepdf({ resume, jobDescription, targetRole }) {
     return pdfFilePath;
 }
 
-module.exports = { analyzeResume, generateResumepdf };
+module.exports = { analyzeResume, generateResumepdf, generateUpgradeIntel };
+
+// ---------------------------------------------------------------------------
+// Generates ONLY the 6 upgrade blocks for an already-saved resume.
+// Called when a report exists in DB but was created before upgrade fields were added.
+// ---------------------------------------------------------------------------
+async function generateUpgradeIntel({ resumeText, targetRole = "" }) {
+    const ai = getClient();
+
+    const upgradeSchema = {
+        type: "object",
+        properties: {
+            upgrade_action_verbs: {
+                type: "array",
+                items: { type: "object", properties: { bad: { type: "string" }, good: { type: "string" } } }
+            },
+            upgrade_quantifiable_data: {
+                type: "array",
+                items: { type: "object", properties: { bad: { type: "string" }, good: { type: "string" } } }
+            },
+            upgrade_fluff_cut: {
+                type: "object",
+                properties: {
+                    bad_chips: { type: "array", items: { type: "string" } },
+                    good_chips: { type: "array", items: { type: "string" } }
+                }
+            },
+            upgrade_layout_crimes: { type: "string" },
+            upgrade_keyword_injection: { type: "array", items: { type: "string" } },
+            upgrade_contact_clarity: { type: "string" }
+        },
+        required: [
+            "upgrade_action_verbs",
+            "upgrade_quantifiable_data",
+            "upgrade_fluff_cut",
+            "upgrade_layout_crimes",
+            "upgrade_keyword_injection",
+            "upgrade_contact_clarity"
+        ]
+    };
+
+    const prompt = `You are a professional resume coach. Analyse the resume below and return the 6 upgrade fields.
+
+Resume:
+${resumeText}
+
+Target Role: ${targetRole || "(not specified)"}
+
+Instructions — use ONLY real content from the resume above:
+1. upgrade_action_verbs: Find 2 weak/passive verbs actually used in this resume and provide stronger alternatives. [{bad, good}]
+2. upgrade_quantifiable_data: Find 2 vague impact statements and rewrite with realistic metrics. [{bad, good}]
+3. upgrade_fluff_cut: Find 2-3 buzzword/filler phrases (bad_chips) and suggest specific, provable replacements (good_chips).
+4. upgrade_layout_crimes: One specific structural/layout issue found in this resume (e.g. missing summary, no dates, inconsistent bullet style).
+5. upgrade_keyword_injection: 5 ATS keywords missing from this resume relevant to the target role. Just the keyword strings.
+6. upgrade_contact_clarity: One specific actionable piece of feedback on the contact section (missing phone, no LinkedIn, etc.).
+
+Return compact JSON matching the schema. No long paragraphs.`;
+
+    const response = await ai.models.generateContent({
+        model: "gemini-3.6-flash",
+        contents: [{ role: "user", parts: [{ text: prompt }] }],
+        config: {
+            responseMimeType: "application/json",
+            responseSchema: upgradeSchema
+        }
+    });
+
+    return JSON.parse(response.text);
+}

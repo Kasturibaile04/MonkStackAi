@@ -124,44 +124,90 @@ async function getAllResumesController(req, res) {
     }
 }
 
-/**
- * @description This function generates a downloadable PDF version of a resume report.
- * @access Private
- * @middleware authMiddleware
- */
-async function generateResumePdfController(req, res) {
-    const { resumeId } = req.params;
+async function upgradeResumeController(req, res) {
     try {
-        const resumeReport = await ResumeModel.findById(resumeId);
-        if (!resumeReport) {
-            return res.status(404).json({
+        let resumeContent = "";
+
+        if (!req.file) {
+            return res.status(400).json({
                 success: false,
-                message: "Resume not found"
+                message: "Resume PDF is required."
             });
         }
 
-        const { resume, jobDescription, targetRole } = resumeReport;
+        const pdfData = await pdfParse(req.file.buffer);
+        resumeContent = pdfData.text.trim();
+
+        if (!resumeContent) {
+            return res.status(400).json({
+                success: false,
+                message: "Could not extract text from the PDF."
+            });
+        }
+
+        const {
+            jobDescription = "",
+            targetRole = ""
+        } = req.body;
 
         const pdfFilePath = await generateResumepdf({
-            resume: resume,
-            jobDescription: jobDescription,
-            targetRole: targetRole
+            resume: resumeContent,
+            jobDescription,
+            targetRole
         });
 
-        return res.download(pdfFilePath, "resume.pdf", (err) => {
-            fs.unlink(pdfFilePath, () => {});
+        // Set appropriate headers for the response
+        res.setHeader("Content-Type", "application/pdf");
+        res.setHeader("Content-Disposition", 'attachment; filename="upgraded-resume.pdf"');
+
+        return res.download(pdfFilePath, "upgraded-resume.pdf", (err) => {
+            fs.unlink(pdfFilePath, () => { });
             if (err) {
                 console.error("Error sending PDF:", err);
             }
         });
 
     } catch (error) {
-        console.error("Resume Controller Error:");
+        console.error("Upgrade Controller Error:");
         console.error(error);
 
         return res.status(500).json({
             success: false,
-            message: "Failed to generate resume PDF",
+            message: "Failed to upgrade resume",
+            error: error.message
+        });
+    }
+}
+
+async function generateUpgradeIntelController(req, res) {
+    const { resumeId } = req.params;
+
+    try {
+        const resumeReport = await ResumeModel.findById(resumeId);
+        if (!resumeReport) {
+            return res.status(404).json({ success: false, message: "Resume not found" });
+        }
+
+        // Fetch just the upgrade intel from Gemini
+        const upgradeIntel = await require("../services/ai.service").generateUpgradeIntel({
+            resumeText: resumeReport.resume_text,
+            targetRole: resumeReport.target_role
+        });
+
+        // Patch the MongoDB document
+        Object.assign(resumeReport, upgradeIntel);
+        await resumeReport.save();
+
+        return res.status(200).json({
+            success: true,
+            message: "Upgrade intel generated successfully",
+            resumeReport
+        });
+    } catch (error) {
+        console.error("Upgrade Intel Controller Error:", error);
+        return res.status(500).json({
+            success: false,
+            message: "Failed to generate upgrade intel",
             error: error.message
         });
     }
@@ -171,5 +217,6 @@ module.exports = {
     generateResumeController,
     getResumeByIdController,
     getAllResumesController,
-    generateResumePdfController
+    upgradeResumeController,
+    generateUpgradeIntelController
 };

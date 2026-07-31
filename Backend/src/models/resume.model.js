@@ -59,7 +59,17 @@ const resumeSchema = new mongoose.Schema(
 
     role_fit: String,
 
-    closing_line: String
+    closing_line: String,
+
+    upgrade_action_verbs: [{ bad: String, good: String }],
+    upgrade_quantifiable_data: [{ bad: String, good: String }],
+    upgrade_fluff_cut: {
+      bad_chips: [String],
+      good_chips: [String]
+    },
+    upgrade_layout_crimes: String,
+    upgrade_keyword_injection: [String],
+    upgrade_contact_clarity: String
   },
   {
     timestamps: true

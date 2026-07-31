@@ -1,6 +1,6 @@
 const express = require("express");
 const ResumeRouter = express.Router();
-const authMiddleware  = require("../middleware/auth.middleware");
+const authMiddleware = require("../middleware/auth.middleware");
 const resumeController = require("../controllers/resume.controller");
 const upload = require("../middleware/file.middleware");
 
@@ -11,7 +11,7 @@ const upload = require("../middleware/file.middleware");
  * @middleware authMiddleware
  */
 
-ResumeRouter.post("/",authMiddleware.authUser,upload.single("resume"),resumeController.generateResumeController)
+ResumeRouter.post("/", authMiddleware.authUser, upload.single("resume"), resumeController.generateResumeController)
 
 /**
  * @route POST /api/resume/:resumeId
@@ -20,7 +20,7 @@ ResumeRouter.post("/",authMiddleware.authUser,upload.single("resume"),resumeCont
  * @middleware authMiddleware
  */
 
-ResumeRouter.get("/report/:resumeId",authMiddleware.authUser,resumeController.getResumeByIdController)
+ResumeRouter.get("/report/:resumeId", authMiddleware.authUser, resumeController.getResumeByIdController)
 
 /**
  * @route GET /api/resume/
@@ -29,15 +29,11 @@ ResumeRouter.get("/report/:resumeId",authMiddleware.authUser,resumeController.ge
  * @middleware authMiddleware
  */
 
-ResumeRouter.get("/",authMiddleware.authUser,resumeController.getAllResumesController)
+ResumeRouter.get("/", authMiddleware.authUser, resumeController.getAllResumesController)
 
-/**
- * @route GET /api/resume/pdf/:resumeId
- * @description This route is used to download a resume report.
- * @access Private
- * @middleware authMiddleware
- */
 
-ResumeRouter.get("/pdf/:resumeId", authMiddleware.authUser, resumeController.generateResumePdfController)
+ResumeRouter.post("/upgrade", authMiddleware.authUser, upload.single("resume"), resumeController.upgradeResumeController)
+
+ResumeRouter.post("/intel/:resumeId", authMiddleware.authUser, resumeController.generateUpgradeIntelController)
 
 module.exports = ResumeRouter;

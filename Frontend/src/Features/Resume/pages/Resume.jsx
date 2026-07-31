@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link, useNavigate, useParams } from 'react-router';
 import '../styles/Resume.scss';
 import { useResume } from '../hooks/useResume';
@@ -8,11 +8,22 @@ const Resume = () => {
     const navigate = useNavigate();
     const { resumeId } = useParams();
     const { resume: roastData, loading, handleGetResumeReport } = useResume();
+    const [fetchError, setFetchError] = useState(null);
 
     useEffect(() => {
+        const fetchReport = async () => {
+            setFetchError(null);
+            try {
+                await handleGetResumeReport(resumeId);
+            } catch (err) {
+                console.error(err);
+                setFetchError('Could not load this report. Please try again.');
+            }
+        };
+
         // Fetch the report if we don't have it in context, or if the ID doesn't match
         if (!roastData || roastData._id !== resumeId) {
-            handleGetResumeReport(resumeId);
+            fetchReport();
         }
     }, [resumeId]);
 
@@ -42,6 +53,29 @@ const Resume = () => {
         }
     };
 
+    if (fetchError) {
+        return (
+            <div className='resume-audit-page'>
+                <nav className='resume-nav'>
+                    <div className='brand'>
+                        <span className='material-symbols-outlined brand-icon'>bolt</span>
+                        <span className='brand-name'>MONKSTACK</span>
+                    </div>
+                </nav>
+                <main className="resume-main-content flex items-center justify-center p-20" style={{ textAlign: 'center', paddingTop: '160px' }}>
+                    <h2 style={{ fontFamily: "'Montserrat', sans-serif" }}>{fetchError}</h2>
+                    <button
+                        className='nav-btn-new'
+                        style={{ marginTop: '24px' }}
+                        onClick={() => handleGetResumeReport(resumeId).catch(() => setFetchError('Could not load this report. Please try again.'))}
+                    >
+                        RETRY
+                    </button>
+                </main>
+            </div>
+        );
+    }
+
     if (loading || !roastData) {
         return (
             <div className='resume-audit-page'>
@@ -66,7 +100,7 @@ const Resume = () => {
                     <span className='material-symbols-outlined brand-icon'>bolt</span>
                     <span className='brand-name'>MONKSTACK</span>
                 </div>
-                <button className='nav-btn-new' onClick={() => navigate('/home')}>BUILD RESUME</button>
+                <button className='nav-btn-new' onClick={() => navigate(`/Upgrade/${roastData._id}`)}>BUILD RESUME</button>
             </nav>
 
             <main className="resume-main-content">

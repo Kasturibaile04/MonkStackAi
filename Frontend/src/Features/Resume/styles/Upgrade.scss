@@ -1,0 +1,405 @@
+$ink: #1a1c1c;
+$paper: #f9f9f9;
+$accent: #ffde00;
+$card: #ffffff;
+$error-bg: #ffdad6;
+$error-text: #93000a;
+
+.upgrade-page {
+    width: 100%;
+    min-height: 100vh;
+    background: $paper;
+    font-family: 'Montserrat', sans-serif;
+    padding-bottom: 40px;
+}
+.loading-screen1 {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    min-height: 100vh;
+    box-sizing: border-box;
+    padding: 40px 64px;
+    background: $paper;
+
+    @media (max-width: 900px) {
+        padding: 24px 16px;
+    }
+}
+
+// Nav
+.upgrade-nav {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: $paper;
+    border-bottom: 2px solid $ink;
+    box-shadow: 4px 4px 0px 0px $ink;
+}
+
+.nav-inner {
+    max-width: 1280px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 16px 24px;
+}
+
+.brand {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 900;
+    font-size: 20px;
+    text-transform: uppercase;
+}
+
+.nav-links {
+    display: flex;
+    align-items: center;
+    gap: 32px;
+
+    a {
+        font-weight: 700;
+        font-size: 14px;
+        color: #4c4732;
+        text-decoration: none;
+        transition: transform 0.1s ease;
+
+        &:hover {
+            transform: translate(2px, 2px);
+        }
+
+        &.active {
+            color: #6d5e00;
+        }
+    }
+}
+
+.new-roast-btn {
+    border: 3px solid $ink;
+    box-shadow: 4px 4px 0px 0px $ink;
+    background: $accent;
+    padding: 8px 20px;
+    font-weight: 700;
+    font-size: 14px;
+    cursor: pointer;
+    transition: all 0.1s ease;
+
+    &:active {
+        transform: translate(4px, 4px);
+        box-shadow: none;
+    }
+}
+
+// Main
+.upgrade-main {
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 48px 24px 80px;
+}
+
+.upgrade-hero {
+    margin-bottom: 56px;
+}
+
+.directive-tag {
+    display: inline-block;
+    background: $accent;
+    border: 3px solid $ink;
+    padding: 4px 16px;
+    font-weight: 700;
+    font-size: 14px;
+    margin-bottom: 20px;
+}
+
+.mission-title {
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 800;
+    font-size: 56px;
+    text-transform: uppercase;
+    line-height: 1.1;
+    margin: 0 0 12px;
+
+    .highlight {
+        background: $accent;
+        padding: 0 8px;
+    }
+
+    @media (max-width: 900px) {
+        font-size: 36px;
+    }
+}
+
+.mission-subtitle {
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 700;
+    font-size: 22px;
+    color: #4c4732;
+    margin: 0;
+}
+
+// Grid
+.upgrade-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 32px;
+
+    @media (max-width: 900px) {
+        grid-template-columns: 1fr;
+    }
+}
+
+.upgrade-card {
+    background: $card;
+    border: 4px solid $ink;
+    box-shadow: 4px 4px 0px 0px $ink;
+    padding: 32px;
+    transition: all 0.2s ease;
+
+    &:hover {
+        transform: translate(2px, 2px);
+        box-shadow: none;
+    }
+
+    h3 {
+        font-family: 'Montserrat', sans-serif;
+        font-weight: 700;
+        font-size: 24px;
+        text-transform: uppercase;
+        letter-spacing: -0.01em;
+        margin: 0;
+    }
+}
+
+.card-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+}
+
+.card-icon {
+    font-size: 32px;
+}
+
+.card-divider {
+    height: 2px;
+    background: $ink;
+    margin: 16px 0;
+}
+
+.card-desc {
+    font-size: 16px;
+    color: #4c4732;
+    font-style: italic;
+    margin: 0 0 16px;
+}
+
+.example-box {
+    background: #eeeeee;
+    border: 2px solid $ink;
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.example-bad {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    opacity: 0.5;
+    text-decoration: line-through;
+    font-size: 15px;
+}
+
+.icon-x {
+    color: #ba1a1a;
+    font-weight: 700;
+}
+
+.example-good {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 15px;
+}
+
+.icon-check {
+    color: #6d5e00;
+}
+
+.hl {
+    background: $accent;
+    padding: 0 4px;
+}
+
+.chip-row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px;
+}
+
+.chip {
+    border: 1px solid $ink;
+    padding: 4px 10px;
+    font-size: 12px;
+    font-weight: 700;
+    text-transform: uppercase;
+}
+
+.chip-bad {
+    background: $error-bg;
+    color: $error-text;
+    text-decoration: line-through;
+}
+
+.chip-good {
+    background: $accent;
+}
+
+.arrow {
+    font-size: 18px;
+}
+
+.layout-preview {
+    position: relative;
+    height: 96px;
+    border: 2px solid $ink;
+    background: #fff;
+    overflow: hidden;
+}
+
+.layout-grid-bg {
+    position: absolute;
+    inset: 0;
+    display: grid;
+    grid-template-columns: repeat(6, 1fr);
+    gap: 8px;
+    padding: 8px;
+    opacity: 0.2;
+
+    div {
+        background: $ink;
+        height: 100%;
+    }
+}
+
+.layout-margin-box {
+    position: absolute;
+    inset: 16px;
+    border: 2px dashed #6d5e00;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 12px;
+    text-transform: uppercase;
+}
+
+.keyword-chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+}
+
+.keyword-chip {
+    background: $accent;
+    border: 2px solid $ink;
+    padding: 6px 14px;
+    font-weight: 700;
+    font-size: 14px;
+    letter-spacing: 0.05em;
+}
+
+.contact-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.contact-item {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    border: 2px solid $ink;
+    padding: 12px;
+    font-weight: 700;
+    font-size: 14px;
+}
+
+.contact-item-dark {
+    background: $ink;
+    color: $paper;
+}
+
+// Final CTA
+.upgrade-cta {
+    margin-top: 80px;
+    text-align: center;
+}
+
+.upgrade-cta h2 {
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 800;
+    font-size: 40px;
+    text-transform: uppercase;
+    margin-bottom: 32px;
+}
+
+.cta-btn {
+    background: $ink;
+    color: $accent;
+    border: 4px solid $ink;
+    box-shadow: 4px 4px 0px 0px $ink;
+    padding: 24px 48px;
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 900;
+    font-size: 24px;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: all 0.15s ease;
+
+    &:hover {
+        background: #333;
+    }
+
+    &:active {
+        transform: translate(2px, 2px);
+        box-shadow: none;
+    }
+}
+
+// Footer
+.upgrade-footer {
+    max-width: 1280px;
+    margin: 64px auto 0;
+    padding: 32px 24px;
+    border-top: 2px solid $ink;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: center;
+    gap: 16px;
+    font-weight: 700;
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.footer-links {
+    display: flex;
+    gap: 24px;
+
+    a {
+        color: #4c4732;
+        text-decoration: none;
+
+        &:hover {
+            color: $ink;
+        }
+    }
+}
