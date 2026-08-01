@@ -12,11 +12,7 @@ export const generateResumeReport = async ({ resumeFile, selfDescription, target
     formData.append("targetRole", targetRole);
     formData.append("tone", tone);
 
-    const response = await api.post("/", formData, {
-        headers: {
-            "Content-Type": "multipart/form-data",
-        }
-    });
+    const response = await api.post("/", formData);
     return response.data;
 }
 
@@ -37,9 +33,6 @@ export async function upgradeResumePdf({ resumeFile, jobDescription, targetRole 
     formData.append("targetRole", targetRole);
 
     const response = await api.post(`/upgrade`, formData, {
-        headers: {
-            "Content-Type": "multipart/form-data",
-        },
         responseType: "blob"
     });
     return response.data;
