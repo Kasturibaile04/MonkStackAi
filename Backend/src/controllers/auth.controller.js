@@ -3,10 +3,7 @@ const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const BlacklistModel = require("../models/blacklist.model");
 
-// Centralized cookie options so register/login/logout always stay in sync.
-// sameSite: "none" + secure: true is required because the frontend (Vercel)
-// and backend (Render) are on different domains — this is a cross-site request,
-// and browsers block cookies on cross-site XHR unless these flags are set.
+
 const cookieOptions = {
     httpOnly: true,
     secure: true,
