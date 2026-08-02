@@ -1,178 +1,154 @@
-# MonkStack AI
+# MONKSTACK AI
 
-**Face the truth about your career choices.**
+**MONKSTACK AI** is a resume roasting and critique SaaS product. Upload your resume, pick a tone, and get an AI-generated "roast report" — a mix of sharp, honest feedback and concrete, actionable fixes to actually make your resume better.
 
-MonkStack AI analyzes your resume — and, if you're brave enough, your own self-description — and generates a brutally honest (or mild, or motivational) AI roast, complete with real, actionable fixes to actually get your resume past a human.
-
----
-
-## Why I Built This
-
-Most resume feedback is either painfully generic or too polite to be useful. MonkStack AI feeds your actual resume text and self-description into an LLM and generates a structured critique — buzzword call-outs, vague-bullet roasts, a reality check against how you describe yourself, and concrete fixes — instead of vague "add more action verbs" advice nobody acts on.
+Built as a full-stack portfolio project demonstrating end-to-end product thinking: file upload handling, AI prompt engineering, structured output generation, and PDF processing.
 
 ---
 
-## Features
+## 🔗 Live Demo
 
-- **Resume roast** — section-by-section critique with the exact offending quote, the joke, and the fix
-- **Adjustable tone** — `savage`, `mild`, or `motivational`
-- **Target role fit** — optional target role input adds a readiness/gap check for that specific role
-- **Self-description reality check** — compares how you describe yourself to what your resume actually shows
-- **PDF resume upload** — text extracted server-side, no manual copy-pasting
-- **Authenticated accounts** — login/register to save and revisit past roasts
-- **Responsive UI** — bold, neo-brutalist design; works across desktop and mobile
+- **Live App:** https://monk-stack-ai-frontend.vercel.app/
 
 ---
 
-## Tech Stack
+## ✨ Features
 
-| Layer      | Technology                   |
-|------------|------------------------------|
-| Frontend   | React (Vite), SCSS           |
-| Backend    | Node.js, Express             |
-| Database   | MongoDB                      |
-| AI         | Gemini api (`@google/genai`) |
-| PDF Parsing| `pdf-parse`                  |
-| Routing    | React Router v6              |
+- **Resume Upload & Parsing** — Upload a PDF resume; text is extracted server-side for analysis.
+- **AI Roast Report** — Get a tone-adjustable critique of your resume:
+  - `savage` — sharp, sarcastic, comedian-energy roasting
+  - `mild` — light teasing, mostly constructive
+  - `motivational` — encouraging, upbeat, fix-focused
+- **Section-by-Section Roasts** — Specific quotes from your resume, roasted and paired with concrete fixes.
+- **Self-Description Reality Check** — Compares how you describe yourself against what your resume actually shows.
+- **Role Fit Analysis** — Optional target-role input evaluates readiness/gaps for a specific job.
+- **Upgrade Intel** — Actionable improvement suggestions:
+  - Weak → strong action verb swaps
+  - Vague claims → quantifiable metrics
+  - Buzzword/fluff detection and replacements
+  - Layout/structure issue callouts
+  - Missing ATS keywords for your target role
+  - Contact info clarity feedback
+- **Resume Upgrade PDF** — Generates a rewritten, upgraded version of your resume as a downloadable PDF.
+- **Report History** — Save and revisit past resume analyses.
 
 ---
 
-## Architecture
+## 🛠 Tech Stack
 
-The backend follows a simple service-oriented separation of concerns:
+**Frontend**
+- React
+- SCSS
+
+**Backend**
+- Node.js / Express
+- MongoDB + Mongoose
+- Multer (file upload handling, in-memory storage)
+- pdfjs-dist (PDF text extraction)
+- Puppeteer (HTML → PDF generation for upgraded resumes)
+- JWT + bcryptjs (authentication)
+- dotenvx (encrypted environment variable management)
+
+**AI**
+- Groq API (`llama-3.3-70b-versatile`) — resume analysis and roast generation
+
+**Deployment**
+- Render (backend)
+
+---
+
+## 📁 Project Structure
 
 ```
-Route Layer     → Express handlers — validate input, call services, shape responses
-Service Layer    → ai.service.js — builds prompts, calls Gemini, validates output shape
-Config Layer     → Database connection, environment setup
-```
-
-The AI service is isolated from Express entirely — `analyzeResume()` takes plain
-data in and returns a plain, schema-validated object out, so it can be tested or
-swapped (Groq, Gemini, etc.) without touching route logic.
-
----
-
-## Project Structure
-
-```
-Frontend/
-  src/
-    features/
-      auth/
-        pages/          # Login, Register
-        style/           # style.scss (shared login/register styles)
-
 Backend/
-  src/
-    routes/
-    controllers/
-    config/
-      database.js        # MongoDB connection
-    services/
-      ai.service.js       # Gemini integration — analyzeResume()
-  server.js
+├── src/
+│   ├── app.js
+│   ├── controllers/
+│   │   └── resume.controller.js
+│   ├── models/
+│   │   └── resume.model.js
+│   ├── routes/
+│   │   └── resume.routes.js
+│   ├── services/
+│   │   └── ai.service.js
+│   ├── middlewares/
+│   │   └── upload.middleware.js
+│   └── utils/
+│       └── pdfExtract.js
+├── server.js
+└── package.json
 ```
 
 ---
 
-## Getting Started
+## 🚀 Getting Started
 
 ### Prerequisites
+- Node.js (v18+ recommended)
+- MongoDB instance (local or Atlas)
+- A free [Groq API key](https://console.groq.com/keys)
 
-- Node.js (v18+)
-- A MongoDB instance (local or Atlas)
-- A Google Gemini API key
-
-### 1. Clone and install
+### Installation
 
 ```bash
 git clone <your-repo-url>
-cd DevWrapper
-
-cd Frontend
-npm install
-
-cd ../Backend
+cd Backend
 npm install
 ```
 
-### 2. Set environment variables
+### Environment Variables
 
-**Backend `.env`:**
+Create a `.env` file in the `Backend` root:
 
 ```env
 PORT=3000
 MONGODB_URI=your_mongodb_connection_string
-GEMINI_API_KEY=your_gemini_api_key
+JWT_SECRET=your_jwt_secret
+GROQ_API_KEY=your_groq_api_key
 ```
 
-**Frontend `.env`:**
-
-```env
-VITE_API_BASE_URL=http://localhost:3000
-```
-
-### 3. Run locally
+### Run locally
 
 ```bash
-# Terminal 1 — backend
-cd Backend
-npm run dev
-
-# Terminal 2 — frontend
-cd Frontend
-npm run dev
+npm run dev     # development, with nodemon auto-restart
+npm start        # production mode
 ```
 
-Frontend runs at `http://localhost:5173`, backend at `http://localhost:3000`.
-
-> **Note:** avoid running this project from a OneDrive-synced folder — live file
-> syncing can cause the dev server (HMR / nodemon) to behave unpredictably.
-> Prefer a local path like `C:\Projects\DevWrapper`.
+The server runs on `http://localhost:3000` by default.
 
 ---
 
-## API Overview
+## 📡 API Endpoints
 
-| Method | Endpoint              | Description                                                        |
-|--------|------------------------|----------------------------------------------------------------------|
-| POST   | `/api/auth/register`   | Register a new user                                                 |
-| POST   | `/api/auth/login`      | Log in an existing user                                             |
-| POST   | `/api/roast-resume`    | Upload a resume PDF + self description, get a structured AI roast   |
+| Method | Endpoint | Description |
+|--------|----------|--------------|
+| `POST` | `/api/resume/` | Upload a resume PDF and generate a roast report |
+| `GET` | `/api/resume/:resumeId` | Fetch a specific resume report by ID |
+| `GET` | `/api/resume/` | Fetch all resume reports for the logged-in user |
+| `POST` | `/api/resume/upgrade` | Upload a resume + job description, get back an upgraded resume PDF |
+| `POST` | `/api/resume/:resumeId/upgrade-intel` | Generate upgrade intel for an existing saved report |
 
-*(Adjust these to match your actual backend routes.)*
-
----
-
-## Data Model
-
-```json
-{
-  "overall_score": 3.5,
-  "opening_jab": "...",
-  "section_roasts": [
-    { "section": "...", "quote": "...", "roast": "...", "fix": "..." }
-  ],
-  "self_description_reality_check": "...",
-  "backhanded_compliment": "...",
-  "real_fixes": ["...", "...", "..."],
-  "role_fit": "... (only present if a target role was provided)",
-  "closing_line": "..."
-}
-```
+All routes are protected by an authentication middleware and require a logged-in user.
 
 ---
 
-## Roadmap
+## 🧠 How It Works
 
-- [ ] Export roast as a shareable PDF/image
-- [ ] Roast history per user account
-- [ ] Public shareable roast links
-- [ ] Cover letter roast mode
+1. User uploads a resume PDF (max 5MB, PDF only).
+2. `pdfjs-dist` extracts plain text from the file.
+3. The extracted text, along with the user's self-description, target role, and chosen tone, is sent to Groq's `llama-3.3-70b-versatile` model with a structured prompt.
+4. The model returns a JSON-formatted roast report, which is validated, saved to MongoDB, and returned to the user.
+5. Optionally, the user can request an "upgraded" version of their resume, which is generated as HTML by the AI and rendered to a PDF via Puppeteer.
 
 ---
 
-## Author
+## 🗺 Roadmap / Ideas
 
-Built by **Kasturi**
+- OCR support for scanned/image-based resume PDFs
+- Multi-language resume support
+- Shareable public roast report links
+- Resume version comparison (before/after upgrade)
+
+
+
+ISC
