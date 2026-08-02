@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const api = axios.create({
-    baseURL: "https://monkstackai-1.onrender.com",
+    baseURL: "https://monkstackai-3.onrender.com",
     withCredentials: true
 });
 
