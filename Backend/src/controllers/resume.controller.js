@@ -1,31 +1,7 @@
-const pdfParse = require("pdf-parse");
 const fs = require("fs");
+const { extractPdfText } = require("../utils/pdfExtract");
 const { analyzeResume, generateResumepdf } = require("../services/ai.service");
 const ResumeModel = require("../models/resume.model");
-
-/**
- * @description Safely parses a PDF buffer into text.
- * pdf-parse (via pdf.js) throws low-level parser errors like
- * "Command token too long: 128" when a PDF's internal structure
- * is malformed/corrupted. We catch that here and turn it into a
- * clean, user-facing message instead of letting it bubble up as
- * an unhandled 500.
- */
-async function safeParsePdf(buffer) {
-    try {
-        const pdfData = await pdfParse(buffer);
-        return pdfData.text.trim();
-    } catch (err) {
-        console.error("PDF parse failed:", err.message);
-        const parseError = new Error(
-            "This PDF couldn't be read. It may be corrupted, scanned as an image, " +
-            "or exported by a tool that produces non-standard PDF structure. " +
-            "Try re-exporting it (e.g. Print to PDF from your browser) and upload again."
-        );
-        parseError.isPdfParseError = true;
-        throw parseError;
-    }
-}
 
 /**
  * @description This function is used to generate a resume roast report.
@@ -43,18 +19,11 @@ async function generateResumeController(req, res) {
 
         let resumeContent;
         try {
-            resumeContent = await safeParsePdf(req.file.buffer);
+            resumeContent = await extractPdfText(req.file.buffer);
         } catch (parseErr) {
             return res.status(400).json({
                 success: false,
                 message: parseErr.message
-            });
-        }
-
-        if (!resumeContent) {
-            return res.status(400).json({
-                success: false,
-                message: "Could not extract text from the PDF."
             });
         }
 
@@ -164,18 +133,11 @@ async function upgradeResumeController(req, res) {
 
         let resumeContent;
         try {
-            resumeContent = await safeParsePdf(req.file.buffer);
+            resumeContent = await extractPdfText(req.file.buffer);
         } catch (parseErr) {
             return res.status(400).json({
                 success: false,
                 message: parseErr.message
-            });
-        }
-
-        if (!resumeContent) {
-            return res.status(400).json({
-                success: false,
-                message: "Could not extract text from the PDF."
             });
         }
 
